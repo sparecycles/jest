@@ -7,9 +7,9 @@
  * @flow
  */
 
-import type { GlobalConfig, ProjectConfig, Path } from 'types/Config';
+import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
-import { createInstrumenter } from 'istanbul-lib-instrument';
+import {createInstrumenter} from 'istanbul-lib-instrument';
 import Runtime from 'jest-runtime';
 
 export type CoverageWorkerResult = {|
@@ -34,11 +34,16 @@ export default function(
     // Transform file without instrumentation first, to make sure produced
     // source code is ES6 (no flowtypes etc.) and can be instrumented
     const scriptTransformer = new Runtime.ScriptTransformer(config);
+    const mapCoverage = scriptTransformer.shouldMapCoverage(
+      filename,
+      coverageOptions.mapCoverage,
+      coverageOptions.mapCoverageOnlyFrom,
+    );
     const transformResult = scriptTransformer.transformSource(
       filename,
       source,
       false,
-      scriptTransformer.shouldMapCOverage(filename, globalConfig),
+      mapCoverage,
     );
     const instrumenter = createInstrumenter();
     instrumenter.instrumentSync(transformResult.code, filename);

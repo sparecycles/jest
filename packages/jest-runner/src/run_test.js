@@ -93,6 +93,7 @@ export default (async function runTest(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     mapCoverage: globalConfig.mapCoverage,
+    mapCoverageOnlyFrom: globalConfig.mapCoverageOnlyFrom,
   });
   const start = Date.now();
   await environment.setup();

@@ -28,6 +28,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   listTests: false,
   logHeapUsage: false,
   mapCoverage: false,
+  mapCoverageOnlyFrom: null,
   maxWorkers: 2,
   noSCM: null,
   noStackTrace: false,

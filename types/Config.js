@@ -162,6 +162,7 @@ export type GlobalConfig = {|
   logHeapUsage: boolean,
   listTests: boolean,
   mapCoverage: boolean,
+  mapCoverageOnlyFrom: ?Array<Glob>,
   maxWorkers: number,
   noStackTrace: boolean,
   nonFlagArgs: Array<string>,

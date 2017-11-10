@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type { Glob, Path, ProjectConfig } from 'types/Config';
+import type {Glob, Path, ProjectConfig} from 'types/Config';
 import type {
   Transformer,
   TransformedSource,
@@ -17,15 +17,15 @@ import type {
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
-import { createDirectory } from 'jest-util';
+import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import { transform as babelTransform } from 'babel-core';
+import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'json-stable-stringify';
 import slash from 'slash';
-import { version as VERSION } from '../package.json';
+import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
 import micromatch from 'micromatch';
@@ -33,7 +33,7 @@ import micromatch from 'micromatch';
 export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{ [key: string]: boolean, __proto__: null },
+  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
   isInternalModule?: boolean,
   mapCoverage: boolean,
   mapCoverageOnlyFrom: ?Array<Glob>,
@@ -183,16 +183,20 @@ export default class ScriptTransformer {
     }).code;
   }
 
-  shouldMapCoverage(filename: Path, options: Options) {
-    if (!options.mapCoverage) {
+  shouldMapCoverage(
+    filename: Path,
+    mapCoverage: boolean,
+    mapCoverageOnlyFrom: ?Array<Glob>,
+  ) {
+    if (!mapCoverage) {
       return false;
     }
 
-    if (!options.mapCoverageOnlyFrom) {
+    if (!mapCoverageOnlyFrom) {
       return true;
     }
 
-    return micromatch.any(filename, options.mapCoverageOnlyFrom);
+    return micromatch.any(filename, mapCoverageOnlyFrom);
   }
 
   transformSource(
@@ -304,7 +308,11 @@ export default class ScriptTransformer {
           filename,
           content,
           instrument,
-          this.shouldMapCoverage(filename, options),
+          this.shouldMapCoverage(
+            filename,
+            !!(options && options.mapCoverage),
+            options && options.mapCoverageOnlyFrom,
+          ),
         );
 
         wrappedCode = wrap(transformedSource.code);
@@ -314,7 +322,7 @@ export default class ScriptTransformer {
       }
 
       return {
-        script: new vm.Script(wrappedCode, { displayErrors: true, filename }),
+        script: new vm.Script(wrappedCode, {displayErrors: true, filename}),
         sourceMapPath,
       };
     } catch (e) {
@@ -414,7 +422,7 @@ function readCodeCacheFile(cachePath: Path): ?string {
  */
 const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
-    writeFileAtomic.sync(cachePath, fileData, { encoding: 'utf8' });
+    writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;

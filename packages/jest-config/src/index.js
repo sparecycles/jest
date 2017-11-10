@@ -89,6 +89,7 @@ const getConfigs = (
       listTests: options.listTests,
       logHeapUsage: options.logHeapUsage,
       mapCoverage: options.mapCoverage,
+      mapCoverageOnlyFrom: options.mapCoverageOnlyFrom,
       maxWorkers: options.maxWorkers,
       noSCM: undefined,
       noStackTrace: options.noStackTrace,

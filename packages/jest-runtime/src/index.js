@@ -7,26 +7,26 @@
  * @flow
  */
 
-import type { Console } from 'console';
-import type { Argv } from 'types/Argv';
-import type { Glob, Path, ProjectConfig } from 'types/Config';
-import type { Environment } from 'types/Environment';
-import type { Context } from 'types/Context';
-import type { Jest, LocalModuleRequire } from 'types/Jest';
-import type { ModuleMap } from 'jest-haste-map';
-import type { MockFunctionMetadata, ModuleMocker } from 'types/Mock';
+import type {Console} from 'console';
+import type {Argv} from 'types/Argv';
+import type {Glob, Path, ProjectConfig} from 'types/Config';
+import type {Environment} from 'types/Environment';
+import type {Context} from 'types/Context';
+import type {Jest, LocalModuleRequire} from 'types/Jest';
+import type {ModuleMap} from 'jest-haste-map';
+import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
 import Resolver from 'jest-resolve';
-import { createDirectory } from 'jest-util';
-import { escapePathForRegex } from 'jest-regex-util';
+import {createDirectory} from 'jest-util';
+import {escapePathForRegex} from 'jest-regex-util';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
-import { run as cilRun } from './cli';
-import { options as cliOptions } from './cli/args';
+import {run as cilRun} from './cli';
+import {options as cliOptions} from './cli/args';
 
 type Module = {|
   children: Array<Module>,
@@ -54,14 +54,15 @@ type InternalModuleOptions = {|
 type CoverageOptions = {
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{ [key: string]: boolean, __proto__: null },
+  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
   mapCoverage: boolean,
+  mapCoverageOnlyFrom: ?Array<Glob>,
 };
 
-type ModuleRegistry = { [key: string]: Module, __proto__: null };
+type ModuleRegistry = {[key: string]: Module, __proto__: null};
 
-type BooleanObject = { [key: string]: boolean, __proto__: null };
-type CacheFS = { [path: Path]: string, __proto__: null };
+type BooleanObject = {[key: string]: boolean, __proto__: null};
+type CacheFS = {[path: Path]: string, __proto__: null};
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const SNAPSHOT_EXTENSION = 'snap';
@@ -72,7 +73,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
     config.moduleNameMapper.length
   ) {
     return config.moduleNameMapper.map(([regex, moduleName]) => {
-      return { moduleName, regex: new RegExp(regex) };
+      return {moduleName, regex: new RegExp(regex)};
     });
   }
   return null;
@@ -91,16 +92,16 @@ class Runtime {
   _explicitShouldMock: BooleanObject;
   _internalModuleRegistry: ModuleRegistry;
   _isCurrentlyExecutingManualMock: ?string;
-  _mockFactories: { [key: string]: () => any, __proto__: null };
-  _mockMetaDataCache: { [key: string]: MockFunctionMetadata, __proto__: null };
-  _mockRegistry: { [key: string]: any, __proto__: null };
+  _mockFactories: {[key: string]: () => any, __proto__: null};
+  _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
+  _mockRegistry: {[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
   _moduleRegistry: ModuleRegistry;
   _resolver: Resolver;
   _shouldAutoMock: boolean;
   _shouldMockModuleCache: BooleanObject;
   _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _sourceMapRegistry: { [key: string]: string, __proto__: null };
+  _sourceMapRegistry: {[key: string]: string, __proto__: null};
   _scriptTransformer: ScriptTransformer;
   _transitiveShouldMock: BooleanObject;
   _unmockList: ?RegExp;
@@ -120,6 +121,7 @@ class Runtime {
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
       mapCoverage: false,
+      mapCoverageOnlyFrom: null,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -338,7 +340,7 @@ class Runtime {
   }
 
   requireInternalModule(from: Path, to?: string) {
-    return this.requireModule(from, to, { isInternalModule: true });
+    return this.requireModule(from, to, {isInternalModule: true});
   }
 
   requireMock(from: Path, moduleName: string) {
@@ -452,7 +454,7 @@ class Runtime {
     from: string,
     moduleName: string,
     mockFactory: () => any,
-    options?: { virtual: boolean },
+    options?: {virtual: boolean},
   ) {
     if (options && options.virtual) {
       const mockPath = this._resolver.getModulePath(from, moduleName);
@@ -713,7 +715,7 @@ class Runtime {
     const mock = (
       moduleName: string,
       mockFactory?: Object,
-      options?: { virtual: boolean },
+      options?: {virtual: boolean},
     ) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
